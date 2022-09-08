@@ -19,8 +19,6 @@ from make.base import Command, CommandError
 
 # Command registration (by importing the containing modules here)
 import make.help
-#from make.help import HelpCommand
-#HelpCommand.__init__subclass__(HelpCommand)
 
 if __name__ == "__main__":
     program = sys.argv[0]

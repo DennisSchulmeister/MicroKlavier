@@ -22,10 +22,10 @@ class HelpCommand(Command, group="", command="help"):
     panic and cry 'Help! Help!'. Obviously some disaster just happened or you
     are simply curious how to use this script. This page is here to help.
 
-    Without any arguments this help page is displayed. Optionally, the name of
-    a group and command can be given to view the specific help page of the
-    command, e.g. `build firmware` to see how a firmware image can be built or
-    just `help` to get help for the help command.
+    This is the help page for the help command. So you already know, how to
+    get help for a specific command. Each command comes with its own help
+    page that can be retrieved with '$program$ help group command' or just
+    '$program$ help command', if the command belongs to no group.
     """
 
     def execute(self, program: str, arguments: List[str]) -> None:
@@ -68,6 +68,7 @@ class HelpCommand(Command, group="", command="help"):
         try:
             help_text = Command.groups[group][command].help_long
             help_text = help_text.replace("$usage$", f"Usage: {program}")
+            help_text = help_text.replace("$program$", program)
             print(help_text)
         except ValueError:
             raise CommandError(f"Unknown command. Please try again.")
