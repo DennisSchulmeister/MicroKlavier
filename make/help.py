@@ -13,8 +13,9 @@ Basic utilities for the build script.
 from .base import Command, CommandError
 from typing import List
 
-class HelpCommand(Command):
+class HelpCommand(Command, group="", command="help"):
     """
+    Display help page of this script or one of its commands
     $usage$ [group] [command]
     
     See Dilbert strip from August 15, 2000: Our disaster recovery plan is to
@@ -26,9 +27,6 @@ class HelpCommand(Command):
     command, e.g. `build firmware` to see how a firmware image can be built or
     just `help` to get help for the help command.
     """
-    group      = ""
-    command    = "help"
-    help_short = "Display help page of this script or one of its commands"
 
     def execute(self, program: str, arguments: List[str]) -> None:
         """
@@ -50,18 +48,14 @@ class HelpCommand(Command):
         """
         print(f"Usage: {program} [group] command [arguments...]")
         print("Note, that only a few commands don't belong to a group. Most time the group is mandatory.")
-        print("")
 
         maxlen = 0
         for group in Command.groups.keys():
             for command in Command.groups[group].keys():
                 maxlen = max(maxlen, len(group) + len(command) + 1)
 
-        i = 0
         for group in sorted(Command.groups.keys()):
-            if i:
-                print("")
-            i += 1
+            print("")
 
             for command in sorted(Command.groups[group]):
                 full_command = f"{group} {command}"

@@ -37,8 +37,9 @@ class Command:
         from .base import Command, CommandError
         from typing import List
 
-        class MyCommand extends Command:
+        class MyCommand(Command, group="build", command="firmware"):
             """"""
+            One-line description of the command
             $usage$ [command] [-v] [-o out file] in file
 
             Long help text, possibly spanning multiple paragraphs. Will be used
@@ -48,34 +49,39 @@ class Command:
             $usage$ will the replaced by the prefix which invokes the command like
             `./Make.py build firmware`.
             """"""
-            group      = "build"
-            command    = "firmware"
-            help_short = "One-line description of the command"
-            
+
             def execute(self, program: str, arguments: List[str]) -> None:
                 # Execute the requested actions. The following parameters are given:
                 #
                 #  * `program`: Name of the executable (usually "./Main.py")
                 #  * `arguments`: String list of the CLI arguments to the command
                 raise CommandError("Sorry, but I cannot do this.")
+    
+    It is important to contain a doc string with the help text of the command.
+    The first line will be used as a one-line summary. The remainder as the
+    full help page.
     """
 
     # Registered groups and commands
     groups: ClassVar[Dict[str, Dict[str, CommandDescriptor]]] = {}
 
-    def __init__subclass__(cls) -> None:
+    def __init_subclass__(cls, group: str, command: str, **kwargs) -> None:
         """
         Automatically register the sub-class as a new command.
         """
-        if not cls.group in Command.groups:
-            Command.groups[cls.group] = {}
+        super().__init_subclass__(**kwargs)
 
-        group = Command.groups[cls.group]
+        if not group in Command.groups:
+            Command.groups[group] = {}
 
-        group[cls.command] = CommandDescriptor(
+        group = Command.groups[group]
+        help_long = dedent(cls.__doc__).strip() if cls.__doc__ else "This command has no help text."
+        help_short = help_long.splitlines()[0]
+
+        group[command] = CommandDescriptor(
             cls        = cls,
-            help_short = cls.help_short if cls.help_short else "[Short description missing]",
-            help_long  = dedent(cls.__doc__) if cls.__doc__ else "This command has no help text.",
+            help_short = help_short,
+            help_long  = help_long,
         )
 
     # Attributes to be overwritten by sub-classes
