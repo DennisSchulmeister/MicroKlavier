@@ -99,6 +99,8 @@ Build Dependencies
 
  * A recent Python installation (CPython) for everything else.
 
+ * KiCAD for the hardware schematics and PCB layouts.
+
 
 Hardware Setup
 --------------
