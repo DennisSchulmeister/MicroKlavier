@@ -16,7 +16,7 @@ frequency modulation and sampling. Many ideas are drawn from classical
 digital synthesizers like the Yamaha DX7, Synclavier and Fairlight CMI.
 Still the aim is not to clone any of these, but rather use their unique
 features as an inspiration for a modern-day synthesis engine running on
-modern-day hardware.
+modern-day embedded hardware.
 
 Implementing a modern-day synthesis engine also means using modern-day
 tools and programing languages. While it is straight-forward to relay
