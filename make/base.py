@@ -7,9 +7,12 @@
 # License, or (at your option) any later version.
 
 """
-Basic utilities for the build script.
+Base classes to define and register commands for the build script.
 """
 
+import glob, os, sys
+
+from configparser import ConfigParser
 from dataclasses import dataclass
 from textwrap import dedent
 from typing import ClassVar, Dict, ForwardRef, List
@@ -40,7 +43,7 @@ class Command:
         class MyCommand(Command, group="build", command="firmware"):
             """"""
             One-line description of the command
-            $usage$ [command] [-v] [-o out file] in file
+            $usage$ [board=$config:micropython:board$] <filename...>
 
             Long help text, possibly spanning multiple paragraphs. Will be used
             as the help text of the command. Thus should not use any markup,
@@ -48,18 +51,22 @@ class Command:
 
             $usage$ will the replaced by the prefix which invokes the command like
             `./Make.py build firmware`.
+
+            $config:…$ will be replaces with a configuration value from `make.conf`,
+            specifying the section and key to be read.
             """"""
 
-            def execute(self, program: str, arguments: List[str]) -> None:
-                # Execute the requested actions. The following parameters are given:
-                #
-                #  * `program`: Name of the executable (usually "./Main.py")
-                #  * `arguments`: String list of the CLI arguments to the command
+            def execute(self) -> None:
+                # Execute the requested actions.
                 raise CommandError("Sorry, but I cannot do this.")
     
     It is important to contain a doc string with the help text of the command.
     The first line will be used as a one-line summary. The remainder as the
-    full help page.
+    full help page. The object will contain the following attributes:
+
+     * `self.program`: Name of the executable (usually "./Main.py")
+     * `self.arguments`: String list of the CLI arguments to the command
+     * `self.config`: `ConfigParser` object with the content of `make.conf`
     """
 
     # Registered groups and commands
@@ -83,13 +90,34 @@ class Command:
             help_short = help_short,
             help_long  = help_long,
         )
-
-    # Attributes to be overwritten by sub-classes
-    group: ClassVar[str]      = ""
-    command: ClassVar[str]    = ""
-    help_short: ClassVar[str] = ""
     
-    def execute(self, program: str, arguments: List[str]) -> None:
+    def __init__(self, program: str, arguments: List[str]):
+        """
+        Constructor to initialize the common object attributes.
+        """
+        # Read configuration and resolve glob patters in its keys
+        config = ConfigParser()
+        config.read("make.conf")
+
+        for category in config:
+            for key in config[category]:
+                if not key.startswith("./"):
+                    continue
+            
+                value = config[category][key]
+                del config[category][key]
+
+                for new_key in glob.glob(key.replace("/", os.path.sep)):
+                    if os.path.isdir(new_key):
+                        new_key = new_key.replace(os.path.sep, "/")
+                        config[category][new_key] = value
+        
+        # Initialize common attributes
+        self.program   = program
+        self.arguments = arguments
+        self.config    = config
+
+    def execute(self) -> None:
         """
         Abstract method to be overwritten by sub-classes to actually execute
         the command. `program` is the executable name of the script, which should
@@ -106,3 +134,46 @@ class CommandError(Exception):
     Exception to be used by Command sub-classes to abort execution with an error message.
     """
     pass
+
+
+def main():
+    """
+    Main function of the build script. Parses the CLI arguments to find the
+    right class to execute the requested command. Returns nothing on success
+    or throws an exception on errors.
+    """
+    program    = sys.argv[0]
+    group      = ""
+    command    = ""
+    arguments  = []
+    descriptor = None
+
+    if len(sys.argv) >= 3:
+        group = sys.argv[1]
+        command = sys.argv[2]
+        arguments = sys.argv[3:]
+
+        try:
+            descriptor = Command.groups[group][command]
+        except KeyError:
+            pass
+
+    if not descriptor and len(sys.argv) >= 2:
+        try:
+            group = ""
+            command = sys.argv[1]
+            arguments = sys.argv[2:]
+            descriptor = Command.groups[""][command]
+        except KeyError:
+            pass
+
+    if not descriptor:
+        if len(sys.argv) == 1:
+            print(f"Usage: {program} [<group>] <command> [<arguments...>]")
+            print("See help command for more details.")
+            return
+        else:
+            raise CommandError("Unknown command. Please try again.")
+
+    command_object = descriptor.cls(program, arguments)
+    command_object.execute()

@@ -2,10 +2,6 @@
 # Adapted version of Micropython's .gitignore file
 #=================================================
 
-# External libraries and sub-projects
-#####################################
-lib/
-
 # Pre-compiled Python modules
 #############################
 *.mpy
