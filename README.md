@@ -5,11 +5,11 @@
 Project Description
 -------------------
 
-This project is an attempt to build a fully-functional hardware music
-synthesizer (aka "sound module") with MicroPython on embedded hardware.
-The aim is to build a polyphonic that can be played and controlled via
-MIDI, as is typical for table-top or rack-mount sound modules, but can
-also be programmed using intuitive hardware controls and a touch screen.
+This project is an attempt to build a fully-functional hardware music synthesizer
+(aka "sound module") with MicroPython on embedded hardware. The aim is to build a
+polyphonic synthesizer that can be played and controlled via MIDI, as is typical
+for table-top or rack-mount sound modules, but can also be programmed using intuitive
+hardware controls and a touch screen.
 
 Synthesis is based on a mixture of additive synthesis, subtractive synthesis,
 frequency modulation and sampling. Many ideas are drawn from classical
