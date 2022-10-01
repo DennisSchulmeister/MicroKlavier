@@ -46,7 +46,7 @@ Build Instructions
 
 The `./make.py` script automates everything to fetch external dependencies
 (like the MicroPython source code) and build everything. For that purpose
-the source tree is split into several `sub-projects` defined in `make.conf`:
+the source tree is split into several sub-projects defined in `make.conf`:
 
  * `main`: The main DSP code implementing the synthesizer itself.
 
@@ -56,14 +56,16 @@ the source tree is split into several `sub-projects` defined in `make.conf`:
  * `research`: Several small experiments to try out different things and
    better understand the usefulness of Python for DSP programming.
 
+ * `hardware`: Not a project to be built with `make.py`per se, but hardware
+   schematics and PCB layouts.
+
 Only the `main` project is needed to build a minimal synthesizer that can
 be used with an external MIDI controller to access all parameters.
 
 All build actions are always "out of tree", this is, `make.py` places all
 its output in a top-level directory called `build`. `./make.py clean` can
 be used to delete this directory and start over from scratch. Although most
-build commands delete their respective build files first anyway.
-
+build commands delete old build files anyway before doing something.
 Note, that unlike `Make` the script neither builds single source files
 (a build is always a full build) nor does it enforce to run certain build
 steps before others. Therefor, for an initial full build several commands
@@ -87,6 +89,15 @@ Some additional notes:
 
  * The script has an extensive help system. Use `./make.py help` and
    `./make.py help <command>` to learn more.
+
+
+Build Dependencies
+------------------
+
+ * A C/C++ toolchain to compile MicroPython (usually GNU GCC), aka
+   `build-essentials` in Debian or `Development Tools` in Fedora.
+
+ * A recent Python installation (CPython) for everything else.
 
 
 Hardware Setup
