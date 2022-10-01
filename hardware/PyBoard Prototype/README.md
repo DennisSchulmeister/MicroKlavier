@@ -1,0 +1,1 @@
+Schematics for how to hook up the PyBoard prototype on a breadboard.

@@ -1,0 +1,1 @@
+Schematics and PCB layouts for the hardware part of this project.

@@ -26,7 +26,7 @@ language like Python, instead. At least in theory this should allow for
 more compact, robust and easier to understand code at the cost of raw
 performance. Hopefully, using the two native code emitters from MicroPython,
 it should still be possible to achieve acceptable performance. Another
-aim is therefor to examine how far Python can be used for complex real-
+aim is therefor to examine how far Python can be used for complex real-time
 DSP and which benefits there are to it.
 
 <!-- TODO: Images, sound demos, videos, ... once there is something to show  -->
