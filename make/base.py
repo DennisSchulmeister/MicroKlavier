@@ -30,9 +30,9 @@ class CommandDescriptor:
 
 class Command:
     """
-    Parent class for an executable commend to be called with `./Make.py command`.
+    Parent class for an executable commend to be called with `./make.py command`.
     By making each command an instance of this class, common logic like passing
-    parameters of building a help page can be simplified.
+    parameters or building a help page can be simplified.
     
     A command can be defined like this:
 
@@ -64,7 +64,7 @@ class Command:
     The first line will be used as a one-line summary. The remainder as the
     full help page. The object will contain the following attributes:
 
-     * `self.program`: Name of the executable (usually "./Main.py")
+     * `self.program`: Name of the executable (usually "./make.py")
      * `self.arguments`: String list of the CLI arguments to the command
      * `self.config`: `ConfigParser` object with the content of `make.conf`
     """
@@ -149,8 +149,8 @@ def main():
     descriptor = None
 
     if len(sys.argv) >= 3:
-        group = sys.argv[1]
-        command = sys.argv[2]
+        group     = sys.argv[1]
+        command   = sys.argv[2]
         arguments = sys.argv[3:]
 
         try:
@@ -160,9 +160,9 @@ def main():
 
     if not descriptor and len(sys.argv) >= 2:
         try:
-            group = ""
-            command = sys.argv[1]
-            arguments = sys.argv[2:]
+            group      = ""
+            command    = sys.argv[1]
+            arguments  = sys.argv[2:]
             descriptor = Command.groups[""][command]
         except KeyError:
             pass

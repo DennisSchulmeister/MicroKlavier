@@ -36,7 +36,7 @@ Project Status
 --------------
 
 Unfinished prototype in very early development. The current goal is to
-develop a proof-of-concept to evaluate the performance of Micropython
+develop a proof-of-concept to evaluate the performance of MicroPython
 on a typical microcontroller for realtime audio synthesis. Once this
 is shown to be feasible, the real synthesizer can be implemented.
 
