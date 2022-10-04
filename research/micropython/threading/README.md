@@ -20,5 +20,10 @@ a callback function to pass the data to the main loop.
 Learnings
 ---------
 
+The module `_thread` doesn't allow to set thread priorities, only to start
+and stop threads in general.
+
 It doesn't work. The module `_thread` is not available for the PyBoard,
 because MICROPY_PY_THREAD defined as 0 in `ports/stm32/mpconfigport.h`.
+
+Conclusion: Think different. :-)

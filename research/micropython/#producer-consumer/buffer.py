@@ -1,17 +1,10 @@
-#! encoding=utf-8
+#encoding=utf-8
 
-# Simple MIDI transposer to test the MIDI IN and MIDI OUT.
-# Prints all received MIDI Events on the serial console.
-# Note On / Note Off will be transposed +12 semitones.
-# All other MIDI events are passed through unchanged.
+# TODO: Replace `data` attribute with `readinto()` method, letting the
+# user to provide their own memory view / buffer to finally write to.
+# -> More idiomatic MicroPython API
 
-# See: https://docs.micropython.org/en/latest/reference/isr_rules.html
-# MicroPython documentation: Writing interrupt handlers
-import machine, micropython
-from machine import UART
-from typing import Tuple
-
-micropython.alloc_emergency_exception_buf(100)
+# TODO: Disable IRQs or not? To be used by interrupt handlers or in co-routines?
 
 class InterruptProducerBuffer:
     """
@@ -153,64 +146,3 @@ class InterruptProducerBuffer:
         it fast enough. Will be cleared the next time `data` is called.
         """
         return self._overrun
-
-class MIDIHandler:
-    """
-    Handling of all MIDI input and output.
-    """
-
-    def __init__(self, uart: int, print_events: bool = True) -> None:
-        """
-        Initialize MIDI handling on the given UART number.
-        """
-        self._buffer = InterruptProducerBuffer(isr_buffer=8, latency=3)
-        
-        self._uart = UART(uart)
-        self._uart.init(31250, bits=8, parity=None, stop=1)
-        self._uart.irq(UART.RX_ANY, handler=self._on_uart_interrupt)
-
-        self._print_events = print_events
-
-    def _on_uart_interrupt(self) -> None:
-        """
-        Interrupt handler called by the underlying UART object when there
-        are between one and eight bytes available.
-        """
-        buffer = self._buffer
-        length = self._uart.readinto(buffer.memory_isr)
-        buffer.commit(length)
-
-    def process(self):
-        """
-        To be called in the main-loop to process all received MIDI events.
-        """
-        uart = self._uart
-        midi_bytes, length = self._buffer.data
-
-        i = 0
-        while i < length:
-            # TODO: Real MIDI handling
-            midi_byte = midi_bytes[i]
-            uart.writechar(midi_byte)
-            print(hex(midi_byte))
-            i += 1
-
-def run():
-    print("+================================================================+")
-    print("| MIDI In/Out Test                                               |")
-    print("+================================================================+")
-    print("|                                                                |")
-    print("| UART1 TX (Y9)  = MIDI OUT                                      |")
-    print("| UART1 RX (Y10) = MID IN                                        |")
-    print("|                                                                |")
-    print("| All received MIDI events will be printed on the serial console |")
-    print("| and sent back through the MIDI OUT. Note On / Note Off will be |")
-    print("| transposed +12 semitones.                                      |")
-    print("|                                                                |")
-    print("+================================================================+")
-    print("")
-
-    midi1 = MIDIHandler(uart=1, print_events=True)
-
-    while True:
-        midi1.process()

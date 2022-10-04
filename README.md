@@ -97,6 +97,9 @@ Build Dependencies
  * A C/C++ toolchain to compile MicroPython (usually GNU GCC), aka
    `build-essentials` in Debian or `Development Tools` in Fedora.
 
+   See ["Build Dependencies" in the MicroPython documentation](https://docs.micropython.org/en/latest/develop/gettingstarted.html#required-dependencies)
+   for more details.
+
  * A recent Python installation (CPython) for everything else.
 
  * KiCAD for the hardware schematics and PCB layouts.
