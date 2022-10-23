@@ -32,3 +32,14 @@ the WyPi port. The documentation contains the class `machine.UART` which
 doesn't exist in the MicroPython source, and the class `pyb.UART` which
 seems to be mapped to `machine.UART`. Even the documentation is slightly
 different.
+
+Thirdly, even with the Viper code emitter, functions, variables, attributes,
+methods, ... are still looked up at runtime. Calling a non-existing function
+will thus only be noticed during testing. This also means, there is still a
+dictionarly look-up executed, costing some runtime.
+
+Fourth, when testing on a breadboard, often times some received bits would
+flip. This always occurs at the end of multiple ones, where the next bit
+is wrongly detected as one instead of zero. This could be a timing issue with
+the circuit components or some random inductance on the breadboard and needs
+to be further analyzed.
