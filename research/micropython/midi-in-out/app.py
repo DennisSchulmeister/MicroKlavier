@@ -2,7 +2,7 @@
 
 # Simple MIDI transposer to test the MIDI IN and MIDI OUT.
 # Prints all received MIDI Events on the serial console.
-# Note On / Note Off will be transposed +12 semitones.
+# Note On / Note Off will be echoed as chords.
 # All other MIDI events are passed through unchanged.
 
 # See: https://docs.micropython.org/en/latest/reference/isr_rules.html
