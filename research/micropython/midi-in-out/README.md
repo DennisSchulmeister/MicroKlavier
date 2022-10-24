@@ -36,7 +36,7 @@ different.
 Thirdly, even with the Viper code emitter, functions, variables, attributes,
 methods, ... are still looked up at runtime. Calling a non-existing function
 will thus only be noticed during testing. This also means, there is still a
-dictionarly look-up executed, costing some runtime.
+dictionary look-up executed, costing some runtime.
 
 Fourth, when testing on a breadboard, often times some received bits would
 flip. This always occurs at the end of multiple ones, where the next bit
